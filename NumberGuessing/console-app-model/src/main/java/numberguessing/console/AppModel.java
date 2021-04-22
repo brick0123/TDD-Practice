@@ -1,5 +1,6 @@
 package numberguessing.console;
 
+import java.util.stream.Stream;
 import numberguessing.PositiveIntegerGenerator;
 
 public final class AppModel {
@@ -47,10 +48,24 @@ public final class AppModel {
           + NEW_LINE + "Enter your guess: ";
       int answer = generator.generateLessThanOrEqualToHundred();
       return getSinglePlayerGameProcessor(answer,1);
+    } else if ("2".equals(input)) {
+      output = "Multiplayer game" + NEW_LINE + "Enter player names separated with commas: ";
+      return getMultiplayerGameProcessor();
     } else {
       completed = true;
     }
     return null;
+  }
+
+  private Processor getMultiplayerGameProcessor() {
+    return input -> {
+      Object[] players = Stream.of(input.split(",")).map(String::trim).toArray();
+      output = "I'm thinking of a number between 1 and 100." + "Enter " + players[0] + "'s guess: ";
+      return input2 -> {
+        output = "Enter " + players[1] + "'s guess: ";
+        return null;
+      };
+    };
   }
 
   private Processor getSinglePlayerGameProcessor(int answer, int triesCount) {
